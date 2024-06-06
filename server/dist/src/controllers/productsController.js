@@ -64,23 +64,6 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getProducts = getProducts;
 // Get a product by ID
-// export const getProductById = async (req: Request, res: Response) => {
-//     console.log(req.body,"kkkkkkkkk")
-//     try {
-//         console.log('Fetching product by ID:', req.params.id);
-//         const product = await Product.findById(req.params.id).populate('category');
-//         console.log('Product found:', product);
-//         if (!product) {
-//             return res.status(404).json({ message: 'Product not found' });
-//         }
-//         // If you want to send only specific category fields, you can pass them as the second argument of populate method
-//         // Example: .populate('category', 'name description')
-//         res.status(200).json(product);
-//     } catch (error: any) {
-//         console.error('Error retrieving product:', error);
-//         res.status(500).json({ message: 'Error retrieving product', error: error.message });
-//     }
-// };
 const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.params.id, ' req.params.id; req.params.id; req.params.id; req.params.id;');
     try {
@@ -100,7 +83,6 @@ exports.getProductById = getProductById;
 // Update a product by ID
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Extract fields from request body
         const { name, description, price, category } = req.body;
         const image = req.file ? req.file.path : undefined;
         // Check if the product ID is valid
@@ -120,7 +102,6 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        // Handle errors
         console.error(error);
         res.status(500).json({ message: 'Error updating product', error: error.message });
     }

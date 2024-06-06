@@ -14,21 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCategories = exports.createCategory = void 0;
 const productcategorymodels_1 = __importDefault(require("../models/productcategorymodels"));
+// Create categories
 const createCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name } = req.body;
         const category = new productcategorymodels_1.default({ name });
         const savedCategory = yield category.save();
         res.status(201).json({ message: 'Category created successfully', category: savedCategory });
-        return savedCategory; // Return the created category object
+        return savedCategory;
     }
     catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating category', error: error.message });
-        return null; // Return null in case of error
+        return null;
     }
 });
 exports.createCategory = createCategory;
+// get categories
 const getCategories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categories = yield productcategorymodels_1.default.find().populate('products');

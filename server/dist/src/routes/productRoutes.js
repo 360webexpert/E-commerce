@@ -17,15 +17,15 @@ const storage = multer_1.default.diskStorage({
     }
 });
 const upload = (0, multer_1.default)({ storage: storage });
-router.get('/:filename', (req, res) => {
+router.get('/file/:filename', (req, res) => {
     const filename = req.params.filename;
     const filepath = path_1.default.join(__dirname, '../uploads', filename);
     res.sendFile(filepath);
 });
 router.post('/', upload.single('image'), productsController_1.createProduct);
 router.get('/', productsController_1.getProducts);
-router.get('/get/:id', productsController_1.getProductById);
+router.get('/product/:id', productsController_1.getProductById);
 router.put('/update/:id', upload.single('image'), productsController_1.updateProduct);
-router.delete('delete/:id', productsController_1.deleteProduct);
+router.delete('/:id', productsController_1.deleteProduct);
 router.get('/image/:image', productsController_1.getProductImage);
 exports.default = router;
