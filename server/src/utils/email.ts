@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
 export const sendVerificationEmail = async (to: string, token: string) => {
     const templatePath = path.join(__dirname, '../views/emailtemplate.ejs');
     const url = `http://localhost:${process.env.PORT}/api/verifyemail?token=${token}`;
-    console.log(url, 'urlllll')
   
     try {
      

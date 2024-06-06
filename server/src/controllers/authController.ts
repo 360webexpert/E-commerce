@@ -8,7 +8,6 @@ import { Types } from 'mongoose';
 // Register a new user
 export const register = async (req: Request, res: Response) => {
     const { email, password, role } = req.body;
-    console.log(req.body,'okkkkkk')
   
     if (!email || !password || !role) {
       return res.status(400).json({ message: 'Email, password, and role are required' });
