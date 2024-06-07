@@ -3,9 +3,8 @@ import {createProduct, getProducts, getProductById, updateProduct,deleteProduct,
 import multer from 'multer';
 import path from 'path';
 
-
-
 const router =express.Router();
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,7 +15,7 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-
+router.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 router.get('/file/:filename', (req, res) => {
     const filename = req.params.filename;
@@ -25,12 +24,12 @@ router.get('/file/:filename', (req, res) => {
 });
 
 
-router.post('/', upload.single('image'), createProduct);
+router.post('/', upload.array('images'), createProduct);
 router.get('/', getProducts);
-router.get('/product/:id', getProductById);
-router.put('/update/:id', upload.single('image'), updateProduct);
-router.delete('/:id', deleteProduct);
-router.get('/image/:image', getProductImage);
+router.get('/getby/:id', getProductById);
+router.put('/update/:id', upload.array('images'), updateProduct);
+router.delete('/delete/:id', deleteProduct); 
+router.get('/images/:filename', getProductImage);
 
 
 export default router;
