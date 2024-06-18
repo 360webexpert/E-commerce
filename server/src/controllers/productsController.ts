@@ -9,11 +9,12 @@ import mongoose from "mongoose";
 // Create a new product
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { name, description, price, category } = req.body;
-        if (!req.file) {
+        const { name, description, price, category, color, size } = req.body;
+        if (!req.files) {
             return res.status(400).json({ message: 'Image file is required' });
         }
-        const image = req.file.path;
+        // const image = req.file.path;
+        const images = (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path);
 
         let categoryDoc;
         if (mongoose.Types.ObjectId.isValid(category)) {
@@ -27,7 +28,7 @@ export const createProduct = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Category not found' });
         }
 
-        const product = new Product({ name, description, price, category: categoryDoc._id, image });
+        const product = new Product({ name, description, price, category: categoryDoc._id, images, color, size });
         const savedProduct = await product.save();
 
         categoryDoc.products.push(savedProduct._id);
@@ -80,8 +81,10 @@ export const getProductById = async (req: Request, res: Response) => {
 // Update a product by ID
 export const updateProduct = async (req: Request, res: Response) => {
     try {
-        const { name, description, price, category } = req.body;
-        const image = req.file ? req.file.path : undefined;
+        const { name, description, price, category, color, size } = req.body;
+        // const image = req.file ? req.file.path : undefined;
+        const images = req.files ? (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path) : undefined;
+
 
         // Check if the product ID is valid
         if (!req.params.id) {
@@ -91,7 +94,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         // Find the product by ID and update its fields
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
-            { name, description, price, category, ...(image && { image }) },
+            { name, description, price, category, ...(images && { images }), color, size },
             { new: true }
         );
 
@@ -100,7 +103,6 @@ export const updateProduct = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Send success response with updated product details
         res.status(200).json({
             message: 'Product updated successfully',
             product: updatedProduct
@@ -115,13 +117,18 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 // Delete a product by ID
 export const deleteProduct = async (req: Request, res: Response) => {
+    console.log(`Deleting product with ID: ${req.params.id}`);
+
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         // Delete the image file
-        fs.unlinkSync(path.resolve(product.image));
+        // fs.unlinkSync(path.resolve(product.images));
+        product.images.forEach(imagePath => {
+            fs.unlinkSync(path.resolve(imagePath));
+        });
         res.status(200).json({ message: 'Product deleted successfully' });
     } catch (error: any) {
         res.status(500).json({ message: 'Error deleting product', error: error.message });
@@ -132,7 +139,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
 // Serve the image
 export const getProductImage = (req: Request, res: Response) => {
-    const imagePath = path.resolve(`./uploads/${req.params.image}`);
+    const imagePath = path.resolve(`./uploads/${req.params.filename}`);
     fs.access(imagePath, fs.constants.F_OK, (err) => {
         if (err) {
             return res.status(404).json({ message: 'Image not found' });

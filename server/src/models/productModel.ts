@@ -6,7 +6,9 @@ export interface IProduct extends Document {
     description: string;
     price: number;
     category: string;
-    image: string;
+    images: string[];
+    color: string; 
+    size: string; 
 }
 
 const productSchema: Schema = new Schema({
@@ -14,7 +16,9 @@ const productSchema: Schema = new Schema({
     description: { type: String, required: true },
     price: { type: Number, required: true },
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
-    image: { type: String, required: true }
+    images: [{ type: String, required: true }],
+    color: { type: String, required: true }, 
+    size: { type: String, required: true } 
 }, {
     timestamps: true
 });
