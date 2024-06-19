@@ -10,6 +10,7 @@ import cors from 'cors';
 import productRoutes from './src/routes/productRoutes';
 import categoryRoutes from './src/routes/productcategoryRoutes';
 import authRoutes from './src/routes/authRoutes';
+import ordersRoutes from "./src/routes/orderRoutes"
 
 
 
@@ -46,6 +47,8 @@ app.use('/api/products', productRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/category', categoryRoutes);
 app.use('/api', authRoutes);
+app.use('/api/order', ordersRoutes)
+
 app.set('trust proxy', true);
 
 
