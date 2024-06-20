@@ -9,6 +9,8 @@ export interface IProduct extends Document {
     images: string[];
     color: string;
     size: string;
+    quantity: number;
+    sku: string;
 }
 
 const productSchema: Schema = new Schema({
@@ -18,7 +20,9 @@ const productSchema: Schema = new Schema({
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     images: [{ type: String, required: true }],
     color: { type: String, required: true },
-    size: { type: String, required: true }
+    size: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    sku: { type: String, required: true, unique: true }
 }, {
     timestamps: true
 });
