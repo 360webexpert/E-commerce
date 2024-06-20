@@ -64,9 +64,6 @@
 // };
 
 
-
-
-
 import { Request, Response } from 'express';
 import Order, { IOrder } from '../models/orderModel';
 import User, { IUser } from '../models/user';

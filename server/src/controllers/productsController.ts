@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 // Create a new product
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { name, description, price, category, color, size } = req.body;
+        const { name, description, price, category, color, size,quantity, sku } = req.body;
         if (!req.files) {
             return res.status(400).json({ message: 'Image file is required' });
         }
@@ -28,7 +28,7 @@ export const createProduct = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Category not found' });
         }
 
-        const product = new Product({ name, description, price, category: categoryDoc._id, images, color, size });
+        const product = new Product({ name, description, price, category: categoryDoc._id, images, color, size,  quantity, sku});
         const savedProduct = await product.save();
 
         categoryDoc.products.push(savedProduct._id);
@@ -81,7 +81,7 @@ export const getProductById = async (req: Request, res: Response) => {
 // Update a product by ID
 export const updateProduct = async (req: Request, res: Response) => {
     try {
-        const { name, description, price, category, color, size } = req.body;
+        const { name, description, price, category, color, size,quantity, sku  } = req.body;
         // const image = req.file ? req.file.path : undefined;
         const images = req.files ? (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path) : undefined;
 
@@ -94,7 +94,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         // Find the product by ID and update its fields
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
-            { name, description, price, category, ...(images && { images }), color, size },
+            { name, description, price, category, ...(images && { images }), color, size,quantity, sku },
             { new: true }
         );
 
