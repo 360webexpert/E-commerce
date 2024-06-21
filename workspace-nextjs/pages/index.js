@@ -1,112 +1,175 @@
-import Image from 'next/image'
+// import Image from 'next/image'
 import Link from 'next/link'
-import { searchProducts } from './hooks/auth';
-import { useState } from 'react';
-import { useAuth } from './signin/AuthContext';
 
 export default function Home() {
-    const [query, setQuery] = useState('');
-    console.log(query, "?????????????????????????????????????????????")
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    // const { user, logout } = useAuth();
-
-    const handleSearch = async () => {
-        try {
-            setLoading(true);
-            const data = await searchProducts(query);
-            setProducts(data); // Assuming data structure matches your API response
-        } catch (error) {
-            setError('Error fetching products. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
-    return (
-        <div className='navbar_container'>
-            <div className="navbar">
-                <div className="logo">ProVista Shop</div>
-                <ul className="nav-links">
-                    <li>
-                        <Link href="/about">About me</Link>
-                    </li>
-                    <li>
-                        <Link href="/contact">Contact me</Link>
-                    </li>
-                    <li>
-                        <Link href="/blog">Blog</Link>
-                    </li>
-                    <li>
-                        <Link href="/projects">Products</Link>
-                    </li>
-                    <li>
-                        <Link href="/signin">Sign In</Link>
-                    </li>
-                </ul>
-                <div>
-                    <div className="search-bar">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
-                        <button style={{ background: "black", color: "white" }} onClick={handleSearch}>Search</button>
-                    </div>
-                </div>
+  return (
+    <section>
+      <div class="relative">
+        <div class="px-4 sm:px-10">
+          <div class="mt-16 max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="md:text-6xl text-4xl font-extrabold mb-6 md:!leading-[75px]">Build Landing Pages with Typeform
+              Integration</h1>
+            <p class="text-base">Embark on a gastronomic journey with our curated dishes, delivered promptly to your
+              doorstep. Elevate your dining experience today. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <div class="mt-10">
+              <button class='px-6 py-3 rounded-xl text-white bg-cyan-900 transition-all hover:bg-cyan-800'>Get started
+                today</button>
             </div>
-
-            {/* logout */}
-            {/* <div className="min-h-screen flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold mb-4">Welcome to the Home Page</h1>
-                {user ? (
-                    <div>
-                        <p className="text-xl mb-4">Hello, {user.email}</p>
-                        <button
-                            onClick={logout}
-                            className="py-2 px-4 text-black bg-red-500 rounded-lg"
-                        >
-                            Logout
-                        </button>
-                    </div>
-                ) : (
-                    <p className="text-xl">You are not logged in.</p>
-                )}
-            </div> */}
-
-            <div className="profile">
-                <div className="products-list">
-                    {loading && <p>Loading...</p>}
-                    {error && <p>{error}</p>}
-                    {!loading && !error && products.length === 0 && <p>No products found.</p>}
-                    {!loading && !error && products.length > 0 && (
-                        products.map((category) => (
-                            <div key={category._id}>
-                                <h3>{category.name}</h3>
-                                <ul>
-                                    {category.products.map((product) => (
-                                        <li key={product._id}>
-                                            <h4>{product.name}</h4>
-                                            <p>{product.description}</p>
-                                            {/* Use Next.js Image component */}
-                                            <div className="w-full md:w-1/2 p-4">
-                                                <img
-                                                    className="w-full h-auto"
-                                                    // src={`http://localhost:8080/${product.images}`}
-                                                    // alt="product image"
-                                                    src={`http://localhost:8080/${product.images}`} // Assuming product.image contains the image path
-                                                    alt={product.name}
-                                                />
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))
-                    )}
-                </div>
-            </div>
+          </div>
+          <hr class="my-12 border-gray-300" />
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+            <img src="https://readymadeui.com/google-logo.svg" class="w-28 mx-auto" alt="google-logo" />
+            <img src="https://readymadeui.com/facebook-logo.svg" class="w-28 mx-auto" alt="facebook-logo" />
+            <img src="https://readymadeui.com/linkedin-logo.svg" class="w-28 mx-auto" alt="linkedin-logo" />
+            <img src="https://readymadeui.com/pinterest-logo.svg" class="w-28 mx-auto" alt="pinterest-logo" />
+          </div>
         </div>
-    )
+        <img src="https://readymadeui.com/bg-effect.svg" class="absolute inset-0 w-full h-full" />
+      </div>
+
+
+      <div class="mt-32">
+        <div class="sm:max-w-7xl max-w-sm mx-auto">
+          <div class="text-center">
+            <h2 class="md:text-4xl text-3xl font-extrabold">Meet our team</h2>
+            <p class="mt-6">Meet our team of professionals to serve you.</p>
+          </div>
+          <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-8 gap-y-20 text-center mt-32">
+            <div class="bg-gray-200 relative rounded">
+              <img src="https://readymadeui.com/team-1.webp" class="w-32 h-32 rounded-full inline-block -mt-12" />
+              <div class="py-6">
+                <h4 class="text-base font-semibold">John Doe</h4>
+                <p class="text-xs mt-1">Software Engineer</p>
+                <div class="space-x-4 mt-6">
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 155.139 155.139">
+                      <path
+                        d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
+                        data-original="#010002" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 512 512">
+                      <path
+                        d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
+                        data-original="#03a9f4" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#000" viewBox="0 0 24 24">
+                      <path
+                        d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
+                        data-original="#0077b5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-200 relative rounded">
+              <img src="https://readymadeui.com/team-2.webp" class="w-32 h-32 rounded-full inline-block -mt-12" />
+              <div class="py-6">
+                <h4 class="text-base font-semibold">Mark Adair</h4>
+                <p class="text-xs mt-1">Software Engineer</p>
+                <div class="space-x-4 mt-6">
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 155.139 155.139">
+                      <path
+                        d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
+                        data-original="#010002" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 512 512">
+                      <path
+                        d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
+                        data-original="#03a9f4" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#000" viewBox="0 0 24 24">
+                      <path
+                        d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
+                        data-original="#0077b5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-200 relative rounded">
+              <img src="https://readymadeui.com/team-3.webp" class="w-32 h-32 rounded-full inline-block -mt-12" />
+              <div class="py-6">
+                <h4 class="text-base font-semibold">Simon Konecki</h4>
+                <p class="text-xs mt-1">Web Designer</p>
+                <div class="space-x-4 mt-6">
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 155.139 155.139">
+                      <path
+                        d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
+                        data-original="#010002" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 512 512">
+                      <path
+                        d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
+                        data-original="#03a9f4" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#000" viewBox="0 0 24 24">
+                      <path
+                        d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
+                        data-original="#0077b5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-200 relative rounded">
+              <img src="https://readymadeui.com/team-6.webp" class="w-32 h-32 rounded-full inline-block -mt-12" />
+              <div class="py-6">
+                <h4 class="text-base font-semibold">Eleanor</h4>
+                <p class="text-xs mt-1">Web Designer</p>
+                <div class="space-x-4 mt-6">
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 155.139 155.139">
+                      <path
+                        d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
+                        data-original="#010002" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12px" fill="#000" viewBox="0 0 512 512">
+                      <path
+                        d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
+                        data-original="#03a9f4" />
+                    </svg>
+                  </button>
+                  <button type="button"
+                    class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none  bg-gray-100 hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#000" viewBox="0 0 24 24">
+                      <path
+                        d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
+                        data-original="#0077b5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          </div>
+        </section>
+        )
 }

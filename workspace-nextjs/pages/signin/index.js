@@ -24,7 +24,8 @@ export default function Signin() {
     if (result.success) {
       alert('sucessfully')
       setToken(result.token);
-      router.push('/');
+      console.log(result,token)
+      // router.push('/');
     } else {
       // Login failed: Show error message
       setError(result.message);
@@ -90,11 +91,11 @@ export default function Signin() {
     <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
       <div className="max-w-md w-full">
         <a href="javascript:void(0)">
-          <img
+          {/* <img
             src="https://readymadeui.com/readymadeui.svg"
             alt="logo"
             className="w-40 mb-8 mx-auto block"
-          />
+          /> */}
         </a>
 
         <div className="p-8 rounded-2xl bg-white shadow">
@@ -187,7 +188,7 @@ export default function Signin() {
             {error && <p className="text-red-600 mt-2">{error}</p>}
             <p className="text-gray-800 text-sm !mt-8 text-center">
               Don't have an account?{' '}
-              <a href="javascript:void(0);" className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold">
+              <a href="/signup" className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold">
                 Register here
               </a>
             </p>

@@ -40,7 +40,7 @@ const ProductDetails = () => {
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <img
           className="w-full h-auto"
-          src={`http://localhost:8080/${product.image}`}
+          src={`http://localhost:8080/${product.images}`}
           alt="product image"
         />
         <div className="p-4">

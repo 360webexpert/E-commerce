@@ -3,6 +3,9 @@ import path from "path";
 import fs from 'fs';
 import Product from '../models/productModel';
 import Category from '../models/productcategorymodels';
+import Cart from "../models/cartmodel";
+import User,{IUser} from "../models/user";
+import {IWishlistUser} from "../models/wishlistmodel"
 import mongoose from "mongoose";
 
 
@@ -146,4 +149,71 @@ export const getProductImage = (req: Request, res: Response) => {
         }
         res.sendFile(imagePath);
     });
+};
+
+
+
+interface MyRequest extends Request {
+    user?: IUser;
+}
+
+//add to cart
+export const addToCart = async (req: MyRequest, res: Response) => {
+    try {
+        const productId = req.body.productId; // Assuming productId is sent in the request body
+        const userId = req.user?._id; // Retrieve user ID from the request object
+
+        // Check if userId is not undefined
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'User ID is required' });
+        }
+
+        // Find or create a cart for the current user
+        let cart = await Cart.findOne({ user: userId });
+
+        if (!cart) {
+            // If the cart doesn't exist, create a new one
+            cart = new Cart({ user: userId, products: [] });
+        }
+
+        // Add the productId to the cart
+        cart.products.push(productId);
+
+        // Save the updated cart to the database
+        await cart.save();
+
+        res.status(200).json({ success: true, message: 'Product added to cart successfully' });
+    } catch (err) {
+        console.error('Error adding product to cart:', err);
+        res.status(500).json({ success: false, message: 'Error adding product to cart' });
+    }
+};
+
+export const addToWishlist = async (req: MyRequest, res: Response) => {
+    try {
+        const productId = req.body.productId;
+        const userId = req.user?._id;
+
+        const user = await User.findById(userId).select('+wishlist') as IWishlistUser; // Ensure wishlist is selected
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the product exists
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Add the product to the user's wishlist
+        if (!user.wishlist.includes(productId)) {
+            user.wishlist.push(productId);
+            await user.save();
+        }
+
+        res.status(200).json({ success: true, message: 'Product added to wishlist successfully' });
+    } catch (err) {
+        console.error('Error adding product to wishlist:', err);
+        res.status(500).json({ success: false, message: 'Error adding product to wishlist' });
+    }
 };
