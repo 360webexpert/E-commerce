@@ -27,3 +27,19 @@ export const getCategories = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error fetching categories', error: error.message });
     }
 };
+
+export const searchCategories = async (req: Request, res: Response) => {
+    const { q } = req.query;
+    try {
+        const categories = await Category.find({
+            $or: [
+                { name: { $regex: new RegExp(q as string, 'i') } }, // Search by category name
+                { 'products.name': { $regex: new RegExp(q as string, 'i') } } // Search by product name
+            ]
+        }).populate('products');
+        res.status(200).json(categories);
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ message: 'Error searching categories', error: error.message });
+    }
+};
