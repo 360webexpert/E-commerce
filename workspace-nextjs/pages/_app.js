@@ -5,12 +5,12 @@ import { AuthProvider } from './signin/AuthContext';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
+    // <AuthProvider>
     <Layout>
       <Component {...pageProps} />
-    </Layout>
-    </AuthProvider>
-  ); 
+     </Layout>
+    // </AuthProvider>
+  );
 }
 
 export default MyApp

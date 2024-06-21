@@ -19,7 +19,7 @@ export const fetchProducts = async () => {
 
 export const fetchProductsById = async (project) => {
     try {
-        const response = await axios.get(`${BACKEND_API_URL}/api/products/getProductById/${project}`);
+        const response = await axios.get(`${BACKEND_API_URL}/api/products/getby/${project}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);
