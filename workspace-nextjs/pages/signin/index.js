@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { loginUser } from '../hooks/auth';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export default function Signin() {
     setLoading(false);
 
     if (result.success) {
-      alert('sucessfully')
+     toast("Succesfully Login!")
       setToken(result.token);
       console.log(result,token)
       // router.push('/');

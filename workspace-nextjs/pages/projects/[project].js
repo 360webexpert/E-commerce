@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { fetchProductsById } from '../hooks/auth';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function Project() {
     const router = useRouter();
     const { project } = router.query;
-
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,39 +29,95 @@ export default function Project() {
         }
     }, [project]);
 
-    const handleAddToBag = async () => {
+    const handleAddToCart = async () => {
         try {
-            // Ensure project ID is valid
+            // Check if projectId is available
             if (!project) {
-                throw new Error('Project ID is missing');
+                console.error('Project ID is missing');
+                return;
             }
-
-            // Retrieve the token from local storage or wherever it is stored after user authentication
-            const token = localStorage.getItem('token'); // Adjust this based on your token storage mechanism
-
-            // Make a POST request to add the product to the cart
-            const response = await fetch('http://localhost:8080/api/products/add', {
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzE1ZDI3YThmYzliZmM0MDhmYmUxOCIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTcxOTIzMDMzMSwiZXhwIjoxNzE5MjMzOTMxfQ.be8zV_P-uu2d6jh3MpJ-72kmBQ5UGo6CqalapCJGb9s';
+            if (!token) {
+                console.error('Authentication token is missing');
+                return;
+            }
+    
+            // Send request to backend API to add product to cart
+            const response = await fetch(`http://localhost:8080/api/products/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Include the token in the request headers
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ productId: project })
+                body: JSON.stringify({ productId: project }), // Assuming project is the productId
             });
-
+    
+            // Handle response from backend
             if (response.ok) {
-                console.log('Product added to cart successfully');
-                // Optionally, provide feedback to the user
+                const responseData = await response.json();
+                console.log('Product added to cart:', responseData);
+                toast.success('Product added to cart successfully', {
+                    position: 'top-right',
+                    autoClose: 3000, // Close the toast after 3 seconds
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                router.push('/cart');
             } else {
-                // Handle non-successful response
-                console.error('Failed to add product to cart:', response.statusText);
-                // Optionally, provide feedback to the user
+                // Handle failed request (e.g., server error, validation error)
+                const errorData = await response.json();
+                console.error('Failed to add product to cart:', errorData.message);
             }
-        } catch (err) {
-            console.error('Error adding product to cart:', err.message);
-            // Optionally, provide feedback to the user
+        } catch (error) {
+            // Handle network errors or exceptions
+            console.error('Error adding product to cart:', error);
+            toast.error('Error adding product to cart', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
+    // const handleAddToBag = async () => {
+    //     try {
+    //         // Ensure project ID is valid
+    //         if (!project) {
+    //             throw new Error('Project ID is missing');
+    //         }
+
+    //         // Retrieve the token from local storage or wherever it is stored after user authentication
+    //         const token = localStorage.getItem('token'); // Adjust this based on your token storage mechanism
+
+    //         // Make a POST request to add the product to the cart
+    //         const response = await fetch('http://localhost:8080/api/products/add', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}` // Include the token in the request headers
+    //             },
+    //             body: JSON.stringify({ productId: project })
+    //         });
+
+    //         if (response.ok) {
+    //             console.log('Product added to cart successfully');
+    //             // Optionally, provide feedback to the user
+    //         } else {
+    //             // Handle non-successful response
+    //             console.error('Failed to add product to cart:', response.statusText);
+    //             // Optionally, provide feedback to the user
+    //         }
+    //     } catch (err) {
+    //         console.error('Error adding product to cart:', err.message);
+    //         // Optionally, provide feedback to the user
+    //     }
+    // };
 
 
 
@@ -78,17 +135,15 @@ export default function Project() {
             if (!response.ok) {
                 throw new Error('Failed to add product to wishlist');
             }
-
             console.log('Product added to wishlist successfully');
-            // Optionally, provide feedback to the user
+            toast.success('Product added to wishlist successfully');
         } catch (err) {
             console.error('Error adding product to wishlist:', err.message);
+            toast.error('Failed to add product to wishlist');
             setAddToWishlistError('Failed to add product to wishlist');
             // Optionally, provide feedback to the user
         }
     };
-
-
 
 
     if (loading) return <p>Loading...</p>;
@@ -168,7 +223,7 @@ export default function Project() {
                                         </div>
 
                                         <div className="mt-10 flex gap-6">
-                                            <button onClick={handleAddToBag} className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md">Add to cart</button>
+                                            <button onClick={handleAddToCart} className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md">Add to cart</button>
                                             <button onClick={handleAddToWishlist} className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md">WishList</button>
                                         </div>
 
@@ -182,7 +237,7 @@ export default function Project() {
                                             </ul>
                                         </div>
 
-                                        <div class="mt-8">
+                                        {/* <div class="mt-8">
                                             <h3 class="text-xl font-bold text-gray-800">Reviews(10)</h3>
                                             <div class="space-y-3 mt-4">
                                                 <div class="flex items-center">
@@ -247,7 +302,7 @@ export default function Project() {
                                             </div>
 
                                             <button type="button" class="w-full mt-8 px-6 py-2.5 border border-blue-600 bg-transparent text-gray-800 text-sm font-semibold rounded-md">Read all reviews</button>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
