@@ -37,14 +37,20 @@ export default function header() {
                     <li>
                         <Link href="/contact">Contact me</Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link href="/blog">Blog</Link>
-                    </li>
+                    </li> */}
                     <li>
                         <Link href="/projects">Products</Link>
                     </li>
                     <li>
                         <Link href="/signin">Sign In</Link>
+                    </li>
+                    <li>
+                        <Link href="/cart">Cart</Link>
+                    </li>
+                    <li>
+                        <Link href="/checkout">Checkout</Link>
                     </li>
                 </ul>
                 <div>
@@ -114,8 +120,6 @@ export default function header() {
                     )}
                 </div>
             </div>
-            
-            {/* <SignIn /> */}
         </div>
     )
 }

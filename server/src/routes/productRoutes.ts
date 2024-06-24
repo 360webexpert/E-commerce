@@ -1,5 +1,5 @@
 import express from 'express';
-import {createProduct, getProducts, getProductById, updateProduct,deleteProduct, getProductImage,addToCart, addToWishlist} from '../controllers/productsController'
+import {createProduct, getProducts, getProductById, updateProduct,deleteProduct, getProductImage,addToCart,getCartData,deleteCartItem, addToWishlist} from '../controllers/productsController'
 import multer from 'multer';
 import path from 'path';
 import { authMiddleware } from '../middlewares/auth';
@@ -32,6 +32,8 @@ router.put('/update/:id', upload.array('images'), updateProduct);
 router.delete('/delete/:id', deleteProduct);
 router.get('/images/:filename', getProductImage);
 router.post('/add', authMiddleware('customer'), addToCart);
+router.get('/getcartdata', authMiddleware('customer'), getCartData);
+router.delete('/delete/::itemId', authMiddleware('customer'), deleteCartItem);
 router.post('/addToWishlist', authMiddleware('customer'), addToWishlist);
 
 
