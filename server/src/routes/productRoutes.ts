@@ -33,7 +33,8 @@ router.delete('/delete/:id', deleteProduct);
 router.get('/images/:filename', getProductImage);
 router.post('/add', authMiddleware('customer'), addToCart);
 router.get('/getcartdata', authMiddleware('customer'), getCartData);
-router.delete('/delete/::itemId', authMiddleware('customer'), deleteCartItem);
+router.delete('/deletecart/:itemId', authMiddleware('customer'), deleteCartItem);
+// router.put('/updatecart/:productId',authMiddleware('customer'), updateCartItem);
 router.post('/addToWishlist', authMiddleware('customer'), addToWishlist);
 
 

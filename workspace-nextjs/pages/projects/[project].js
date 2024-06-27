@@ -31,17 +31,19 @@ export default function Project() {
 
     const handleAddToCart = async () => {
         try {
-            // Check if projectId is available
             if (!project) {
                 console.error('Project ID is missing');
                 return;
             }
-            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzE1ZDI3YThmYzliZmM0MDhmYmUxOCIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTcxOTIzMDMzMSwiZXhwIjoxNzE5MjMzOTMxfQ.be8zV_P-uu2d6jh3MpJ-72kmBQ5UGo6CqalapCJGb9s';
+            // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzE1ZDI3YThmYzliZmM0MDhmYmUxOCIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTcxOTIzMDMzMSwiZXhwIjoxNzE5MjMzOTMxfQ.be8zV_P-uu2d6jh3MpJ-72kmBQ5UGo6CqalapCJGb9s';
+            const token = process.env.NEXT_PUBLIC_AUTH_TOKEN;
+            console.log(token)
             if (!token) {
                 console.error('Authentication token is missing');
+                toast("Authentication token is missing")
                 return;
             }
-    
+
             // Send request to backend API to add product to cart
             const response = await fetch(`http://localhost:8080/api/products/add`, {
                 method: 'POST',
@@ -51,7 +53,7 @@ export default function Project() {
                 },
                 body: JSON.stringify({ productId: project }), // Assuming project is the productId
             });
-    
+
             // Handle response from backend
             if (response.ok) {
                 const responseData = await response.json();
@@ -66,10 +68,32 @@ export default function Project() {
                     progress: undefined,
                 });
                 router.push('/cart');
-            } else {
+            } else if (response.status === 409) {
+                toast.error('Product already exists in the cart', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else if (response.status === 500) {
+                toast.error('Server error, please try again later', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+            else {
                 // Handle failed request (e.g., server error, validation error)
                 const errorData = await response.json();
                 console.error('Failed to add product to cart:', errorData.message);
+                toast.error('Failed to add product to cart', errorData.message)
             }
         } catch (error) {
             // Handle network errors or exceptions
@@ -132,11 +156,49 @@ export default function Project() {
                 body: JSON.stringify({ productId: project })
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to add product to wishlist');
+            if (response.ok) {
+                toast.success('Product added to wishlist successfully', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else if (response.status === 409) {
+                toast.error('Product already exists in the wishlist', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
-            console.log('Product added to wishlist successfully');
-            toast.success('Product added to wishlist successfully');
+            else if (response.status === 500) {
+                toast.error('Server error, please try again later', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } else {
+                const errorData = await response.json();
+                toast.error(errorData.message || 'Failed to add product to wishlist', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         } catch (err) {
             console.error('Error adding product to wishlist:', err.message);
             toast.error('Failed to add product to wishlist');
@@ -209,8 +271,8 @@ export default function Project() {
                                         <div class="mt-8">
                                             <h3 class="text-xl font-bold text-gray-800">Sizes</h3>
                                             <div class="flex flex-wrap gap-4 mt-4">
-                                                <button type="button" class="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">{product.size}</button>
-                                                {/* {product.size && Array.isArray(product.size) ? (
+                                                {/* <button type="button" class="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">{product.size}</button> */}
+                                                {product.size && Array.isArray(product.size) ? (
                                                     product.size.map((size, index) => (
                                                         <button key={index} type="button" className="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">
                                                             {size}
@@ -218,7 +280,22 @@ export default function Project() {
                                                     ))
                                                 ) : (
                                                     <p>No sizes available</p>
-                                                )} */}
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div class="mt-8">
+                                            <h3 class="text-xl font-bold text-gray-800">Colour</h3>
+                                            <div class="flex flex-wrap gap-4 mt-4">
+                                                {/* <button type="button" class="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">{product.color}</button> */}
+                                                {product.color && Array.isArray(product.color) ? (
+                                                    product.color.map((color, index) => (
+                                                        <button key={index} type="button" className="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">
+                                                            {color}
+                                                        </button>
+                                                    ))
+                                                ) : (
+                                                    <p>No Color available</p>
+                                                )}
                                             </div>
                                         </div>
 

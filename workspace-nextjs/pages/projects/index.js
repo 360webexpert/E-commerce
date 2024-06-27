@@ -47,15 +47,19 @@ const Projects = () => {
                   <div>
                     <img
                       className="w-full h-64 object-cover"
-                      src={`http://localhost:8080/${project.images}`} // Assuming product.image contains the image path
+                      src={`http://localhost:8080/${project.images[0]}`} // Assuming product.image contains the image path
                       alt={project.name}
                     />
                     <div className="p-4">
                       <h2 className="text-xl font-semibold mb-2">{project.name}</h2>
-                      <h5 className="text-xl font-semibold ">Colour: {project.color}</h5>
-                      <h5 className="text-xl font-semibold ">Size : {project.size}</h5>
+                      {/* <h5 className="text-xl font-semibold ">Size : {project.size}</h5> */}
+                      <div className="mb-2">
+                    <h5 className="text-xl font-semibold">Size:</h5>
+                    <p className="text-gray-700 dark:text-gray-400">{project.size.join(', ')}</p>
+                  </div>
                       <h5 className="text-xl font-semibold ">Price :${project.price}</h5>
-                      <p className="text-gray-600 mb-4">{project.description}</p>
+                      {/* <h5 className="text-xl font-semibold ">Colour: {project.color}</h5> */}
+                      {/* <p className="text-gray-600 mb-4">{project.description}</p> */}
                       <div className="text-indigo-500 hover:text-indigo-600">View More</div>
                     </div>
                   </div>

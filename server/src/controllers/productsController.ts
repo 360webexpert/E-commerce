@@ -10,15 +10,49 @@ import mongoose from "mongoose";
 
 
 // Create a new product
-export const createProduct = async (req: Request, res: Response) => {
+// export const createProduct = async (req: Request, res: Response) => {
+//     try {
+//         const { name, description, price, category, color, size, quantity, sku } = req.body;
+//         if (!req.files) {
+//             return res.status(400).json({ message: 'Image file is required' });
+//         }
+//         // const image = req.file.path;
+//         const images = (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path);
+
+//         let categoryDoc;
+//         if (mongoose.Types.ObjectId.isValid(category)) {
+//             categoryDoc = await Category.findById(category);
+//         } else {
+//             categoryDoc = await Category.findOne({ name: category });
+//         }
+
+//         if (!categoryDoc) {
+//             // Handle case where category is not found
+//             return res.status(404).json({ message: 'Category not found' });
+//         }
+
+//         const product = new Product({ name, description, price, category: categoryDoc._id, images, color, size, quantity, sku });
+//         const savedProduct = await product.save();
+
+//         categoryDoc.products.push(savedProduct._id);
+//         await categoryDoc.save();
+
+//         res.status(201).json({
+//             message: 'Product created successfully',
+//             product: savedProduct
+
+//         });
+
+//     } catch (error: any) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Error creating product', error: error.message });
+//     }
+// };
+export const createProduct = async (req:Request, res:Response) => {
     try {
         const { name, description, price, category, color, size, quantity, sku } = req.body;
-        if (!req.files) {
-            return res.status(400).json({ message: 'Image file is required' });
-        }
-        // const image = req.file.path;
+        // Assuming images are uploaded via multer and stored in req.files
         const images = (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path);
-
         let categoryDoc;
         if (mongoose.Types.ObjectId.isValid(category)) {
             categoryDoc = await Category.findById(category);
@@ -27,28 +61,37 @@ export const createProduct = async (req: Request, res: Response) => {
         }
 
         if (!categoryDoc) {
-            // Handle case where category is not found
             return res.status(404).json({ message: 'Category not found' });
         }
 
-        const product = new Product({ name, description, price, category: categoryDoc._id, images, color, size, quantity, sku });
+        const product = new Product({
+            name,
+            description,
+            price,
+            category: categoryDoc._id,
+            images,
+            color: color || [], // Ensure color is an array
+            size: size || [], // Ensure size is an array
+            quantity,
+            sku
+        });
+
         const savedProduct = await product.save();
 
+        // Update category with the new product
         categoryDoc.products.push(savedProduct._id);
         await categoryDoc.save();
 
         res.status(201).json({
             message: 'Product created successfully',
             product: savedProduct
-
         });
 
-    } catch (error: any) {
-        console.error(error);
+    } catch (error:any) {
+        console.error('Error creating product:', error);
         res.status(500).json({ message: 'Error creating product', error: error.message });
     }
 };
-
 
 
 // Get all products
@@ -82,26 +125,81 @@ export const getProductById = async (req: Request, res: Response) => {
 
 
 // Update a product by ID
+// export const updateProduct = async (req: Request, res: Response) => {
+//     try {
+//         const { name, description, price, category, color, size, quantity, sku } = req.body;
+//         // const image = req.file ? req.file.path : undefined;
+//         const images = req.files ? (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path) : undefined;
+
+
+//         // Check if the product ID is valid
+//         if (!req.params.id) {
+//             return res.status(400).json({ message: 'Product ID is required' });
+//         }
+
+//         // Find the product by ID and update its fields
+//         const updatedProduct = await Product.findByIdAndUpdate(
+//             req.params.id,
+//             { name, description, price, category, ...(images && { images }), color, size, quantity, sku },
+//             { new: true }
+//         );
+
+//         // Check if the product exists
+//         if (!updatedProduct) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         res.status(200).json({
+//             message: 'Product updated successfully',
+//             product: updatedProduct
+//         });
+//     } catch (error: any) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Error updating product', error: error.message });
+//     }
+// };
 export const updateProduct = async (req: Request, res: Response) => {
     try {
         const { name, description, price, category, color, size, quantity, sku } = req.body;
-        // const image = req.file ? req.file.path : undefined;
-        const images = req.files ? (req.files as Express.Multer.File[]).map((file: Express.Multer.File) => file.path) : undefined;
+        const images = req.files ? (req.files as Express.Multer.File[]).map(file => file.path) : undefined;
 
-
-        // Check if the product ID is valid
+        // Validate if product ID is provided
         if (!req.params.id) {
             return res.status(400).json({ message: 'Product ID is required' });
         }
 
-        // Find the product by ID and update its fields
+        // Construct update object with only provided fields
+        const updateFields: any = {};
+        if (name) updateFields.name = name;
+        if (description) updateFields.description = description;
+        if (price) updateFields.price = price;
+        if (category) {
+            if (mongoose.Types.ObjectId.isValid(category)) {
+                updateFields.category = category;
+            } else {
+                // Find category by name if provided
+                const categoryDoc = await Category.findOne({ name: category });
+                if (categoryDoc) {
+                    updateFields.category = categoryDoc._id;
+                } else {
+                    return res.status(404).json({ message: 'Category not found' });
+                }
+            }
+        }
+        if (images) updateFields.images = images;
+        if (color) updateFields.color = color.split(',').map((c: string) => c.trim()); // Convert string to array
+        if (size) updateFields.size = size.split(',').map((s: string) => s.trim()); // Convert string to array
+        if (quantity) updateFields.quantity = quantity;
+        if (sku) updateFields.sku = sku;
+
+        // Find product by ID and update fields
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
-            { name, description, price, category, ...(images && { images }), color, size, quantity, sku },
+            updateFields,
             { new: true }
         );
 
-        // Check if the product exists
+        // Check if product exists
         if (!updatedProduct) {
             return res.status(404).json({ message: 'Product not found' });
         }
@@ -111,7 +209,7 @@ export const updateProduct = async (req: Request, res: Response) => {
             product: updatedProduct
         });
     } catch (error: any) {
-        console.error(error);
+        console.error('Error updating product:', error);
         res.status(500).json({ message: 'Error updating product', error: error.message });
     }
 };
@@ -308,6 +406,33 @@ export const getCartData = async (req: MyRequest, res: Response) => {
 
 
 // Delete cart data
+// export const deleteCartItem = async (req: MyRequest, res: Response) => {
+//     try {
+//         const userId = req.user?._id;
+
+//         if (!userId) {
+//             return res.status(400).json({ success: false, message: 'User ID is required' });
+//         }
+
+//         const itemId = req.body.itemId; // Assuming itemId is sent in the request body
+
+//         const cart = await Cart.findOne({ user: userId });
+
+//         if (!cart) {
+//             return res.status(404).json({ success: false, message: 'Cart not found' });
+//         }
+
+//         // Logic to remove item from cart...
+//         // Example: cart.products = cart.products.filter(productId => productId.toString() !== itemId);
+//         // Update and save cart...
+
+//         res.status(200).json({ success: true, message: 'Item removed from cart successfully' });
+//     } catch (error) {
+//         console.error('Error removing item from cart:', error);
+//         res.status(500).json({ success: false, message: 'Error removing item from cart' });
+//     }
+// };
+// Delete cart data
 export const deleteCartItem = async (req: MyRequest, res: Response) => {
     try {
         const userId = req.user?._id;
@@ -316,7 +441,7 @@ export const deleteCartItem = async (req: MyRequest, res: Response) => {
             return res.status(400).json({ success: false, message: 'User ID is required' });
         }
 
-        const itemId = req.body.itemId; // Assuming itemId is sent in the request body
+        const itemId = req.params.itemId; // Assuming itemId is passed as a route parameter
 
         const cart = await Cart.findOne({ user: userId });
 
@@ -324,9 +449,11 @@ export const deleteCartItem = async (req: MyRequest, res: Response) => {
             return res.status(404).json({ success: false, message: 'Cart not found' });
         }
 
-        // Logic to remove item from cart...
-        // Example: cart.products = cart.products.filter(productId => productId.toString() !== itemId);
-        // Update and save cart...
+        // Remove the item from the cart's products array
+        cart.products = cart.products.filter(productId => productId.toString() !== itemId);
+
+        // Save the updated cart
+        await cart.save();
 
         res.status(200).json({ success: true, message: 'Item removed from cart successfully' });
     } catch (error) {
@@ -334,6 +461,8 @@ export const deleteCartItem = async (req: MyRequest, res: Response) => {
         res.status(500).json({ success: false, message: 'Error removing item from cart' });
     }
 };
+
+
 
 // Add to whishlist
 export const addToWishlist = async (req: MyRequest, res: Response) => {
